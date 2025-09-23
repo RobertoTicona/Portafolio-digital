@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Graficar Funciones Lineales – Programación Numérica</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f1a;
+      color: #f5f5f5;
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #6a1b9a, #283593);
+      padding: 40px 20px 50px 20px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+
+    header h1 {
+      margin: 0 0 10px 0;
+      font-size: 2.5em;
+      font-weight: bold;
+    }
+
+    header p {
+      font-size: 1.2em;
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    /* SECCIONES */
+    .section {
+      background: #1e1e2e;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 950px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #64b5f6;
+      font-size: 1.8em;
+      border-bottom: 2px solid #2196f3;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+
+    .section p {
+      text-align: justify;
+      font-size: 1.05em;
+    }
+
+    /* BLOQUE DE CÓDIGO */
+    pre {
+      background: #121212;
+      color: #dcdcdc;
+      padding: 15px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 0.95rem;
+      margin-top: 15px;
+    }
+
+    code {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+    }
+
+    /* ENLACES A ARCHIVOS */
+    .links {
+      margin-top: 15px;
+      text-align: center; /* Centrar botones */
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 10px;
+      background: #1976d2;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .links a:hover {
+      background: #2196f3;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad 1 – Graficar Funciones Lineales</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+  <h2>Descripción</h2>
+  <p>
+    Una <strong>función</strong> es una relación matemática entre dos conjuntos, donde a cada valor de 
+    entrada (generalmente llamado <em>x</em>) le corresponde un único valor de salida (<em>y</em>). 
+    Se suele expresar como:
+  </p>
+
+  <pre><code>y = f(x)</code></pre>
+
+  <p>
+    Las <strong>funciones lineales</strong> son aquellas cuya representación gráfica es una línea recta. 
+    Tienen la forma general:
+  </p>
+
+  <pre><code>f(x) = m·x + b</code></pre>
+
+  <ul>
+    <li><strong>m</strong> es la <em>pendiente</em>, que indica la inclinación de la recta.</li>
+    <li><strong>b</strong> es la <em>ordenada al origen</em>, es decir, el punto donde la recta corta al eje <em>y</em>.</li>
+  </ul>
+
+  <p>
+    En ese sentido se desarrollo un programa en Python capaz de reconocer dos funciones lineales y generar
+    sus respectivos gráficos, para lo cual el limite de unidades por cada coordenada en el plano cartesiano
+    es de 20 unidades y no se utilizaron librerias especializadas de Python.
+  </p>
+  </div>
+
+
+  <!-- Código -->
+  <div class="section">
+    <h2>Código en Python</h2>
+    <pre><code>
+      def preparar_expresion(expr: str) -> str:
+          expr = expr.replace(" ", "")          # quitar espacios
+          expr = expr.replace("^", "**")        # potencia
+          expr = expr.replace("-x", "-1*x")     # caso -x
+          expr = expr.replace("+x", "+1*x")     # caso +x
+          if expr.startswith("x"):              # si empieza con x
+              expr = "1*" + expr
+          expr = expr.replace("x", "*x")        # poner multiplicación
+          expr = expr.replace("**x", "*x")      # corregir si se duplicó
+          return expr
+
+      # Pedimos las dos funciones
+      func1 = input("Ingrese la primera función (ejemplo: 2x+1): ")
+      func2 = input("Ingrese la segunda función (ejemplo: -x+3): ")
+
+      func1 = preparar_expresion(func1)
+      func2 = preparar_expresion(func2)
+
+      # Definimos el rango del gráfico (valores de X y Y)
+      xmin, xmax = -20, 20
+      ymin, ymax = -20, 20
+
+      # Recorremos los valores de Y de arriba hacia abajo
+      for y in range(ymax, ymin - 1, -1):
+          linea = ""
+
+          for x in range(xmin, xmax + 1):
+              try:
+                  y1 = eval(func1)
+              except:
+                  y1 = None
+              try:
+                  y2 = eval(func2)
+              except:
+                  y2 = None
+
+              cond1 = (y1 is not None and abs(y - y1) < 0.5)
+              cond2 = (y2 is not None and abs(y - y2) < 0.5)
+
+              if cond1 and cond2:
+                  linea += "#"
+              elif cond1:
+                  linea += "*"
+              elif cond2:
+                  linea += "o"
+              elif x == 0 and y == 0:
+                  linea += "+"
+              elif x == 0:
+                  linea += "|"
+              elif y == 0:
+                  linea += "-"
+              else:
+                  linea += " "
+          print(linea)
+
+      # Leyenda
+      print("\nLeyenda del gráfico:")
+      print("  * = Función 1")
+      print("  o = Función 2")
+      print("  # = Intersección")
+      print("  | = Eje Y")
+      print("  - = Eje X")
+      print("  + = Origen (0,0)")
+    </code></pre>
+
+    <div class="links">
+      <a href="PN_U1_Trabajo_2_Graficar_funciones_lineales.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="Graficar_funciones.py" target="_blank">🐍 Descargar Código</a>
+      <a href="../../../unidad1.html">⬅️ Volver a Actividades de la Unidad 1</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
