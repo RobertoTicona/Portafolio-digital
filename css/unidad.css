@@ -1,0 +1,33 @@
+/* ====== ESTILOS ESPECIALES DE LAS UNIDADES ====== */
+
+/* LISTA DE ACTIVIDADES */
+.actividades ul {
+  list-style: none;
+  padding: 0;
+}
+
+.actividades li {
+  background: #29293d;
+  margin: 12px 0;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: transform 0.2s, background 0.3s;
+}
+
+.actividades li:hover {
+  transform: translateX(5px);
+  background: #33334d;
+}
+
+.actividades a {
+  color: #ff8a80;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.actividades a:hover {
+  color: #ff5252;
+  text-decoration: underline;
+}
