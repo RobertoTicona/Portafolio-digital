@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Método de la Secante – Programación Numérica</title>
+  <link rel="stylesheet" href="../../../css/tareas.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad II – Método de la Secante</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+    <h2>Descripción</h2>
+    <p style="text-align: justify;">
+      El <strong>método de la Secante</strong> es un procedimiento numérico iterativo empleado para aproximar
+      las raíces reales de una función continua <em>f(x)</em>. A diferencia del método de Newton-Raphson,
+      este método no requiere el cálculo de la derivada analítica, ya que la pendiente se aproxima usando
+      dos puntos consecutivos cercanos a la raíz.
+    </p>
+
+    <p style="text-align: justify;">
+      La idea central consiste en reemplazar la tangente utilizada en el método de Newton por una 
+      <strong>secante</strong>, es decir, la recta que pasa por los puntos 
+      <em>(x<sub>n-1</sub>, f(x<sub>n-1</sub>))</em> y <em>(x<sub>n</sub>, f(x<sub>n</sub>))</em>.
+      La intersección de esta recta con el eje <em>x</em> proporciona una nueva aproximación de la raíz,
+      calculada mediante la siguiente fórmula:
+    </p>
+
+    <pre><code>xₙ₊₁ = xₙ - f(xₙ) * (xₙ - xₙ₋₁) / (f(xₙ) - f(xₙ₋₁))</code></pre>
+
+    <p style="text-align: justify;">
+      Este método combina la simplicidad del método de bisección con una velocidad de convergencia 
+      superior, cercana a la del método de Newton-Raphson, siempre que los valores iniciales sean adecuados.
+    </p>
+
+    <p style="text-align: justify;">
+      Antes de aplicar el método, es recomendable representar gráficamente la función <em>f(x)</em> en un
+      intervalo apropiado. Esta visualización ayuda a seleccionar los puntos iniciales <em>x₀</em> y
+      <em>x₁</em> próximos a una raíz, lo cual mejora la estabilidad y rapidez de convergencia del método.
+    </p>
+
+    <p style="text-align: justify;">
+      Entre sus principales ventajas destacan su <strong>eficiencia</strong> y el hecho de que
+      <strong>no requiere derivadas</strong>. Sin embargo, su éxito depende de la elección adecuada
+      de los puntos iniciales y de la continuidad de la función, ya que, en caso contrario,
+      el método podría divergir.
+    </p>
+  </div>
+
+  <!-- Aplicación -->
+  <div class="section">
+    <h2>Aplicación del método en Python</h2>
+    <p style="text-align: justify;">
+      Se implementó un programa en <strong>Python</strong> que permite al usuario ingresar una función
+      <em>f(x)</em> y graficarla en un intervalo definido. Esta primera etapa facilita la identificación
+      visual de las posibles raíces y la selección de los valores iniciales <em>x₀</em> y <em>x₁</em>.
+    </p>
+
+    <p style="text-align: justify;">
+      Posteriormente, el programa aplica el método de la Secante de manera iterativa hasta alcanzar una
+      tolerancia establecida o un número máximo de iteraciones. En cada paso, se muestran los valores de
+      <em>x₀</em>, <em>x₁</em>, <em>f(x₀)</em>, <em>f(x₁)</em>, la nueva aproximación <em>x₂</em> y el
+      error absoluto.
+    </p>
+
+    <p style="text-align: justify;">
+      Este enfoque integra la interpretación gráfica con el cálculo numérico, promoviendo una comprensión
+      más profunda del comportamiento y la convergencia del método.
+    </p>
+  </div>
+
+  <!-- Código -->
+  <div class="section">
+    <h2>Código en Python</h2>
+    <pre><code>
+      import numpy as np
+      import matplotlib.pyplot as plt
+
+      # === 1. Ingreso de la función ===
+      func_str = input("Ingrese la función f(x): ")  # Ejemplo: x**3 - x - 1
+
+      # Definir la función
+      def f(x):
+          return eval(func_str, {"np": np, "x": x})
+
+      # === 2. Graficar la función ===
+      xmin = float(input("Ingrese el valor mínimo de x: "))
+      xmax = float(input("Ingrese el valor máximo de x: "))
+
+      x = np.linspace(xmin, xmax, 400)
+      y = f(x)
+
+      plt.figure(figsize=(8, 5))
+      plt.plot(x, y, label=f"f(x) = {func_str}", color='blue')
+      plt.axhline(0, color='black', linestyle='--')
+      plt.axvline(0, color='black', linestyle='--')
+      plt.title("Gráfico de la función ingresada")
+      plt.xlabel("x")
+      plt.ylabel("f(x)")
+      plt.legend()
+      plt.grid(True)
+      plt.show()
+
+      # === 3. Pregunta si desea aplicar el método de la Secante ===
+      op = input("¿Desea encontrar una raíz con el método de la Secante? (s/n): ").lower()
+
+      if op == "s":
+          # === 4. Ingreso de puntos iniciales ===
+          x0 = float(input("Ingrese el primer valor inicial x0: "))
+          x1 = float(input("Ingrese el segundo valor inicial x1: "))
+
+          tol = 1e-6
+          max_iter = 100
+
+          print("\nIteración |     x0      |      x1      |     f(x0)     |     f(x1)     |     x2      |   Error")
+          print("----------------------------------------------------------------------")
+
+          for i in range(1, max_iter + 1):
+              f0 = f(x0)
+              f1 = f(x1)
+
+              if f1 - f0 == 0:
+                  print(f"\n⚠️ División por cero en la iteración {i}. El método no puede continuar.")
+                  break
+
+              x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
+              error = abs(x2 - x1)
+
+              print(f"{i:9d} | {x0:10.6f} | {x1:10.6f} | {f0:12.6f} | {f1:12.6f} | {x2:10.6f} | {error:10.6f}")
+
+              if error < tol:
+                  print(f"\n✅ Raíz aproximada encontrada: {x2:.6f}")
+                  print(f"Iteraciones realizadas: {i}")
+                  break
+
+              x0, x1 = x1, x2
+
+          else:
+              print("\n⚠️ No se alcanzó la convergencia después de", max_iter, "iteraciones.")
+      else:
+          print("No se aplicó el método de la Secante.")
+    </code></pre>
+  </div>
+
+  <!-- Enlaces -->
+  <div class="section">
+    <div class="links">
+      <a href="PN_U2_Trabajo_6_Método_de_la_Secante.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="Secante.py" target="_blank">🐍 Descargar Código</a>
+      <a href="../../../unidad2.html">⬅️ Volver a Actividades de la Unidad 2</a>
+    </div>
+  </div>
+
+</body>
+</html>

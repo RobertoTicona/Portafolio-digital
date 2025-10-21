@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Método de Bisección – Programación Numérica</title>
+  <link rel="stylesheet" href="../../../css/tareas.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad II – Método de Bisección</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+    <h2>Descripción</h2>
+    <p style="text-align: justify;">
+      El <strong>método de bisección</strong> es un procedimiento iterativo empleado para encontrar una raíz real
+      de una función continua <em>f(x)</em> dentro de un intervalo cerrado <em>[a, b]</em> en el cual la función cambia
+      de signo, es decir, <em>f(a) · f(b) &lt; 0</em>. El método se fundamenta en el
+      <strong>teorema del valor intermedio</strong>, que garantiza la existencia de al menos una raíz en dicho intervalo.
+    </p>
+
+    <p style="text-align: justify;">
+      El algoritmo consiste en dividir repetidamente el intervalo a la mitad y seleccionar el subintervalo
+      en el que se conserva el cambio de signo. En cada iteración, se calcula el punto medio:
+    </p>
+
+    <pre><code>c = (a + b) / 2</code></pre>
+
+    <p style="text-align: justify;">
+      y se evalúa el signo de <em>f(c)</em>. Si <em>f(a) · f(c) &lt; 0</em>, entonces la raíz se encuentra en el
+      intervalo <em>[a, c]</em>; de lo contrario, en <em>[c, b]</em>. Este proceso se repite hasta que la longitud
+      del intervalo sea menor que una tolerancia prefijada o se alcance un número máximo de iteraciones.
+    </p>
+
+    <p style="text-align: justify;">
+      Antes de aplicar el método, es recomendable graficar la función para identificar los puntos donde cruza
+      el eje <em>x</em> y elegir correctamente el intervalo <em>[a, b]</em>. Esto garantiza que el método cumpla
+      su condición de aplicabilidad y converja hacia una raíz real.
+    </p>
+
+    <p style="text-align: justify;">
+      Entre sus principales ventajas destacan su <strong>seguridad</strong> y su independencia de las derivadas.
+      Sin embargo, su convergencia es <strong>lineal</strong>, lo que lo hace más lento que otros métodos iterativos.
+    </p>
+  </div>
+
+  <!-- Aplicación -->
+  <div class="section">
+    <h2>Aplicación del método en Python</h2>
+    <p style="text-align: justify;">
+      Se desarrolló un programa en <strong>Python</strong> que permite al usuario ingresar una función matemática
+      y graficarla en un intervalo definido. Esta primera etapa facilita la elección del intervalo <em>[a, b]</em>
+      donde la función cambia de signo.
+    </p>
+
+    <p style="text-align: justify;">
+      Una vez definido el intervalo, el programa ejecuta el método de bisección iterativamente, mostrando en pantalla
+      una tabla con los valores de <em>a</em>, <em>b</em>, <em>c</em>, <em>f(c)</em> y el error en cada iteración.
+      El proceso concluye cuando se alcanza la tolerancia establecida o el número máximo de iteraciones.
+    </p>
+
+    <p style="text-align: justify;">
+      Este enfoque combina la interpretación gráfica con el análisis numérico, fomentando una comprensión más completa
+      del comportamiento de la función y de la estabilidad del método.
+    </p>
+  </div>
+
+  <!-- Código -->
+  <div class="section">
+    <h2>Código en Python</h2>
+    <pre><code>
+      import numpy as np
+      import matplotlib.pyplot as plt
+
+      # === 1. Ingreso de la función ===
+      func_str = input("Ingrese la función f(x): ")  # Ejemplo: x**3 - x - 1
+
+      # Definimos la función
+      def f(x):
+          return eval(func_str, {"np": np, "x": x})
+
+      # === 2. Graficar la función ===
+      xmin = float(input("Ingrese el valor mínimo de x: "))
+      xmax = float(input("Ingrese el valor máximo de x: "))
+
+      x = np.linspace(xmin, xmax, 400)
+      y = f(x)
+
+      plt.figure(figsize=(8, 5))
+      plt.plot(x, y, label=f"f(x) = {func_str}", color='blue')
+      plt.axhline(0, color='black', linestyle='--')
+      plt.axvline(0, color='black', linestyle='--')
+      plt.title("Gráfico de la función ingresada")
+      plt.xlabel("x")
+      plt.ylabel("f(x)")
+      plt.legend()
+      plt.grid(True)
+      plt.show()
+
+      # === 3. Pregunta si desea aplicar el método de Bisección ===
+      op = input("¿Desea encontrar una raíz con el método de Bisección? (s/n): ").lower()
+
+      if op == "s":
+          # === 4. Ingreso del intervalo inicial ===
+          a = float(input("Ingrese el extremo izquierdo del intervalo (a): "))
+          b = float(input("Ingrese el extremo derecho del intervalo (b): "))
+
+          # Verificación del cambio de signo
+          if f(a) * f(b) > 0:
+              print("\n⚠️ No hay cambio de signo en el intervalo [a, b]. Intente con otro intervalo.")
+          else:
+              # Parámetros del método
+              tol = 1e-6
+              max_iter = 100
+
+              print("\nIteración |     a       |      b       |      c       |    f(c)     |   Error")
+              print("----------------------------------------------------------------")
+
+              for i in range(1, max_iter + 1):
+                  c = (a + b) / 2
+                  fc = f(c)
+                  error = abs(b - a) / 2
+
+                  print(f"{i:9d} | {a:10.6f} | {b:10.6f} | {c:10.6f} | {fc:10.6f} | {error:10.6f}")
+
+                  if abs(fc) < tol or error < tol:
+                      print(f"\n✅ Raíz aproximada encontrada: {c:.6f}")
+                      print(f"Iteraciones realizadas: {i}")
+                      break
+
+                  if f(a) * fc < 0:
+                      b = c
+                  else:
+                      a = c
+              else:
+                  print("\n⚠️ No se alcanzó la convergencia después de", max_iter, "iteraciones.")
+      else:
+          print("No se aplicó el método de Bisección.")
+    </code></pre>
+  </div>
+
+  <!-- Enlaces -->
+  <div class="section">
+    <div class="links">
+      <a href="PN_U2_Trabajo_6_Método_de_Bisección.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="Bisección.py" target="_blank">🐍 Descargar Código</a>
+      <a href="../../../unidad2.html">⬅️ Volver a Actividades de la Unidad 2</a>
+    </div>
+  </div>
+
+</body>
+</html>

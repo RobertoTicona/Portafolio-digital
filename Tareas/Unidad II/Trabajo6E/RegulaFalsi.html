@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Método de Regula Falsi – Programación Numérica</title>
+  <link rel="stylesheet" href="../../../css/tareas.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad II – Método de Regula Falsi</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+    <h2>Descripción</h2>
+    <p style="text-align: justify;">
+      El <strong>método de Regula Falsi</strong>, también conocido como <em>método de la Falsa Posición</em>, es una técnica numérica utilizada 
+      para encontrar raíces reales de ecuaciones no lineales de la forma <em>f(x) = 0</em>. 
+      Se basa en el mismo principio del método de Bisección: la existencia de una raíz dentro de un intervalo 
+      <em>[a, b]</em> donde <em>f(a)</em> y <em>f(b)</em> tienen signos opuestos, es decir, <em>f(a)f(b) &lt; 0</em>.
+    </p>
+
+    <p style="text-align: justify;">
+      A diferencia de la Bisección, el método de Regula Falsi no toma el punto medio del intervalo, sino que aproxima la raíz 
+      mediante la intersección de la recta secante que pasa por los puntos <em>(a, f(a))</em> y <em>(b, f(b))</em> con el eje <em>x</em>.  
+      El valor aproximado de la raíz en cada iteración se calcula mediante la fórmula:
+    </p>
+
+    <pre><code>c = b - (f(b) * (a - b)) / (f(a) - f(b))</code></pre>
+
+    <p style="text-align: justify;">
+      El proceso se repite reemplazando uno de los extremos del intervalo según el signo de <em>f(c)</em>, 
+      de modo que siempre se mantenga la condición de cambio de signo.  
+      El método converge más rápido que la Bisección, especialmente cuando la función se comporta de forma aproximadamente 
+      lineal cerca de la raíz.
+    </p>
+
+    <h3>Importancia de la visualización previa</h3>
+    <p style="text-align: justify;">
+      Antes de aplicar el método, es recomendable graficar la función <em>f(x)</em> en el intervalo de estudio.  
+      Esta representación permite verificar visualmente la existencia de una raíz (es decir, el cruce con el eje <em>x</em>) 
+      y seleccionar adecuadamente los valores iniciales <em>a</em> y <em>b</em> donde la función cambia de signo.  
+      Una elección incorrecta del intervalo puede hacer que el método falle o no converja hacia la raíz deseada.
+    </p>
+
+    <h3>Restricciones y limitaciones</h3>
+    <ul>
+      <li>Requiere que <em>f(a)</em> y <em>f(b)</em> tengan signos opuestos (<em>f(a)f(b) &lt; 0</em>).</li>
+      <li>Si la función tiene una pendiente muy diferente en los extremos del intervalo, la convergencia puede volverse lenta.</li>
+      <li>No garantiza la convergencia si la función no es continua o no cambia de signo en el intervalo.</li>
+    </ul>
+  </div>
+
+  <!-- Aplicación -->
+  <div class="section">
+    <h2>Aplicación del método en Python</h2>
+    <p style="text-align: justify;">
+      Se desarrolló un programa en <strong>Python</strong> que permite al usuario ingresar una función <em>f(x)</em>, graficarla en un intervalo definido
+      y aplicar el método de Regula Falsi si así lo desea.
+    </p>
+
+    <p style="text-align: justify;">
+      El programa realiza iteraciones hasta que se cumpla un criterio de tolerancia, mostrando en cada paso los valores de 
+      <em>a</em>, <em>b</em>, <em>c</em>, <em>f(c)</em> y el error estimado.
+    </p>
+
+    <h3>Entradas del programa</h3>
+    <ul>
+      <li>Una cadena de texto que representa la función matemática <em>f(x)</em>.</li>
+      <li>Los valores iniciales <em>a</em> y <em>b</em> que delimitan el intervalo de búsqueda.</li>
+      <li>El intervalo para graficar la función.</li>
+    </ul>
+
+    <p>Ejemplo de función:</p>
+    <pre><code>f(x) = x**3 - x - 1</code></pre>
+
+    <h3>Salidas del programa</h3>
+    <ul>
+      <li>Gráfica de la función <em>f(x)</em> en el intervalo ingresado.</li>
+      <li>La raíz aproximada encontrada.</li>
+      <li>Número de iteraciones realizadas hasta cumplir la tolerancia.</li>
+    </ul>
+
+    <h3>Restricciones</h3>
+    <ul>
+      <li>La función debe ser continua en el intervalo <em>[a, b]</em>.</li>
+      <li>Debe cumplirse la condición de cambio de signo <em>f(a)f(b) &lt; 0</em>.</li>
+    </ul>
+  </div>
+
+  <!-- Código -->
+  <div class="section">
+    <h2>Código en Python</h2>
+    <pre><code>
+      import numpy as np
+      import matplotlib.pyplot as plt
+
+      # === 1. Ingreso de la función ===
+      print("=== MÉTODO DE REGULA FALSI (FALSA POSICIÓN) ===")
+      func_str = input("Ingrese la función f(x): ")  # Ejemplo: x**3 - x - 1
+
+      # Definición de la función
+      def f(x):
+          return eval(func_str, {"np": np, "x": x})
+
+      # === 2. Graficar la función ===
+      xmin = float(input("Ingrese el valor mínimo de x: "))
+      xmax = float(input("Ingrese el valor máximo de x: "))
+
+      x = np.linspace(xmin, xmax, 400)
+      y = f(x)
+
+      plt.figure(figsize=(8, 5))
+      plt.plot(x, y, label=f"f(x) = {func_str}", color='blue')
+      plt.axhline(0, color='black', linestyle='--')
+      plt.axvline(0, color='black', linestyle='--')
+      plt.title("Gráfico de la función ingresada")
+      plt.xlabel("x")
+      plt.ylabel("f(x)")
+      plt.legend()
+      plt.grid(True)
+      plt.show()
+
+      # === 3. Pregunta si desea aplicar el método de Regula Falsi ===
+      op = input("¿Desea aplicar el método de Regula Falsi? (s/n): ").lower()
+
+      if op == "s":
+          # === 4. Ingreso de los extremos del intervalo ===
+          a = float(input("Ingrese el valor de a (extremo izquierdo): "))
+          b = float(input("Ingrese el valor de b (extremo derecho): "))
+
+          # Comprobación del cambio de signo
+          if f(a) * f(b) > 0:
+              print("⚠️ La función no cambia de signo en el intervalo. No se puede aplicar el método.")
+          else:
+              tol = 1e-6
+              max_iter = 100
+
+              print("\nIteración |      a      |      b      |      c      |    f(c)     |   Error")
+              print("-----------------------------------------------------------------------")
+
+              c_old = a
+              for i in range(1, max_iter + 1):
+                  # Fórmula de Regula Falsi
+                  c = b - (f(b) * (a - b)) / (f(a) - f(b))
+                  error = abs(c - c_old)
+                  c_old = c
+
+                  print(f"{i:9d} | {a:10.6f} | {b:10.6f} | {c:10.6f} | {f(c):10.6f} | {error:10.6f}")
+
+                  if abs(f(c)) < tol or error < tol:
+                      print(f"\n✅ Raíz aproximada encontrada: {c:.6f}")
+                      print(f"Iteraciones realizadas: {i}")
+                      break
+
+                  # Actualización de intervalos
+                  if f(a) * f(c) < 0:
+                      b = c
+                  else:
+                      a = c
+              else:
+                  print("\n⚠️ No se alcanzó la convergencia después de", max_iter, "iteraciones.")
+      else:
+          print("No se aplicó el método de Regula Falsi.")
+    </code></pre>
+  </div>
+
+  <!-- Enlaces -->
+  <div class="section">
+    <div class="links">
+      <a href="PN_U2_Trabajo_6_Método_de_Regula_Falsi.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="RegulaFalsi.py" target="_blank">🐍 Descargar Código</a>
+      <a href="../../../unidad2.html">⬅️ Volver a Actividades de la Unidad 2</a>
+    </div>
+  </div>
+
+</body>
+</html>

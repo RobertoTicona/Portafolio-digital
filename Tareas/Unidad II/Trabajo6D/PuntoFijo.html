@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Método del Punto Fijo – Programación Numérica</title>
+  <link rel="stylesheet" href="../../../css/tareas.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad II – Método del Punto Fijo</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+    <h2>Descripción</h2>
+    <p style="text-align: justify;">
+      El <strong>método del Punto Fijo</strong> es una técnica iterativa utilizada para encontrar soluciones aproximadas 
+      de ecuaciones no lineales de la forma <em>f(x) = 0</em>. Se basa en reescribir la ecuación en una forma equivalente:
+    </p>
+
+    <pre><code>x = g(x)</code></pre>
+
+    <p style="text-align: justify;">
+      En este enfoque, la raíz buscada corresponde al punto donde <em>g(x)</em> y la recta <em>y = x</em> se intersectan. 
+      A partir de un valor inicial <em>x₀</em>, se genera una sucesión de aproximaciones mediante:
+    </p>
+
+    <pre><code>xₙ₊₁ = g(xₙ)</code></pre>
+
+    <p style="text-align: justify;">
+      El proceso continúa hasta que la diferencia entre dos iteraciones consecutivas sea menor que una tolerancia 
+      predefinida, indicando que se ha alcanzado una convergencia aceptable.
+    </p>
+
+    <p style="text-align: justify;">
+      Para que el método converja, es necesario que <em>g(x)</em> sea continua y diferenciable en el intervalo considerado,
+      y que se cumpla la condición <em>|g'(x)| &lt; 1</em>. En caso contrario, el método puede divergir o entrar en oscilación.
+    </p>
+
+    <p style="text-align: justify;">
+      Antes de aplicar el método, se recomienda representar gráficamente tanto la función <em>f(x)</em> como su forma iterativa
+      <em>g(x)</em> en un intervalo adecuado. Esta visualización ayuda a identificar las zonas de intersección y seleccionar un
+      valor inicial <em>x₀</em> apropiado.
+    </p>
+
+    <p style="text-align: justify;">
+      Entre sus ventajas destacan su <strong>simplicidad conceptual</strong> y la facilidad de implementación. Sin embargo,
+      requiere elegir cuidadosamente la forma de <em>g(x)</em> y el valor inicial para asegurar la convergencia.
+    </p>
+  </div>
+
+  <!-- Aplicación -->
+  <div class="section">
+    <h2>Aplicación del método en Python</h2>
+    <p style="text-align: justify;">
+      Se implementó un programa en <strong>Python</strong> que permite ingresar una función <em>f(x)</em> y su forma iterativa
+      <em>g(x)</em>, graficar la función y aplicar el método de Punto Fijo de manera interactiva.
+    </p>
+
+    <p style="text-align: justify;">
+      El programa evalúa de forma sucesiva <em>xₙ₊₁ = g(xₙ)</em> hasta que el error entre iteraciones sea menor que una tolerancia
+      establecida. También muestra los valores obtenidos en cada paso, facilitando el análisis de la convergencia.
+    </p>
+
+    <p style="text-align: justify;">
+      Esta práctica permite comprender el comportamiento del método y observar cómo influye la elección de la función iterativa 
+      <em>g(x)</em> en la estabilidad del proceso.
+    </p>
+  </div>
+
+  <!-- Código -->
+  <div class="section">
+    <h2>Código en Python</h2>
+    <pre><code>
+      import numpy as np
+      import matplotlib.pyplot as plt
+
+      # === 1. Ingreso de la función y su forma iterativa g(x) ===
+      print("=== MÉTODO DEL PUNTO FIJO ===")
+      print("Recuerde que f(x) = 0 se reescribe como x = g(x)")
+      print("Ejemplo: Si f(x) = cos(x) - x, entonces g(x) = cos(x)\n")
+
+      func_str = input("Ingrese la función original f(x): ")   # Ejemplo: np.cos(x) - x
+      g_str = input("Ingrese la función iterativa g(x): ")     # Ejemplo: np.cos(x)
+
+      # Definición de funciones
+      def f(x):
+          return eval(func_str, {"np": np, "x": x})
+
+      def g(x):
+          return eval(g_str, {"np": np, "x": x})
+
+      # === 2. Graficar la función f(x) ===
+      xmin = float(input("Ingrese el valor mínimo de x: "))
+      xmax = float(input("Ingrese el valor máximo de x: "))
+
+      x = np.linspace(xmin, xmax, 400)
+      y = f(x)
+
+      plt.figure(figsize=(8, 5))
+      plt.plot(x, y, label=f"f(x) = {func_str}", color='blue')
+      plt.axhline(0, color='black', linestyle='--')
+      plt.axvline(0, color='black', linestyle='--')
+      plt.title("Gráfico de la función ingresada")
+      plt.xlabel("x")
+      plt.ylabel("f(x)")
+      plt.legend()
+      plt.grid(True)
+      plt.show()
+
+      # === 3. Pregunta si desea aplicar el método de punto fijo ===
+      op = input("¿Desea aplicar el método de Punto Fijo? (s/n): ").lower()
+
+      if op == "s":
+          # === 4. Ingreso de valor inicial ===
+          x0 = float(input("Ingrese el valor inicial x0: "))
+
+          tol = 1e-6
+          max_iter = 100
+
+          print("\nIteración |     x0      |     g(x0)     |     f(x0)     |   Error")
+          print("---------------------------------------------------------------")
+
+          for i in range(1, max_iter + 1):
+              x1 = g(x0)
+              error = abs(x1 - x0)
+
+              print(f"{i:9d} | {x0:10.6f} | {x1:12.6f} | {f(x1):12.6f} | {error:10.6f}")
+
+              if error < tol:
+                  print(f"\n✅ Raíz aproximada encontrada: {x1:.6f}")
+                  print(f"Iteraciones realizadas: {i}")
+                  break
+
+              x0 = x1
+          else:
+              print("\n⚠️ No se alcanzó la convergencia después de", max_iter, "iteraciones.")
+      else:
+          print("No se aplicó el método de Punto Fijo.")
+    </code></pre>
+  </div>
+
+  <!-- Enlaces -->
+  <div class="section">
+    <div class="links">
+      <a href="PN_U2_Trabajo_6_Método_de_Punto_Fijo.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="PuntoFijo.py" target="_blank">🐍 Descargar Código</a>
+      <a href="../../../unidad2.html">⬅️ Volver a Actividades de la Unidad 2</a>
+    </div>
+  </div>
+
+</body>
+</html>
