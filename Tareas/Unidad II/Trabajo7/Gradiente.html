@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gradiente de una función – Programación Numérica</title>
+  <link rel="stylesheet" href="../../../css/tareas.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad II – Gradiente de una función</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+    <h2>Concepto del gradiente</h2>
+    <p style="text-align: justify;">
+      El <strong>gradiente</strong> representa la tasa de cambio o pendiente de una función respecto a sus variables.
+      En el caso de una sola variable, el gradiente se reduce simplemente a la derivada de la función. 
+      Para una función <em>f(x)</em>, el método del descenso del gradiente busca el mínimo actualizando los valores de 
+      <em>x</em> mediante la ecuación:
+    </p>
+
+    <pre><code>x[i+1] = x[i] - η * f'(x[i])</code></pre>
+
+    <p style="text-align: justify;">
+      donde:
+      <ul>
+        <li><em>x[i]</em>: valor actual de la variable.</li>
+        <li><em>η</em>: tasa de aprendizaje (<em>learning rate</em>).</li>
+        <li><em>f'(x[i])</em>: derivada o pendiente de la función en <em>x[i]</em>.</li>
+      </ul>
+      El proceso se repite hasta que <em>f'(x)</em> se acerque a cero, es decir, cuando se alcanza el mínimo de la función.
+    </p>
+  </div>
+
+  <!-- Implementación en R -->
+  <div class="section">
+    <h2>Implementación en R</h2>
+    <p style="text-align: justify;">
+      El siguiente código en <strong>R</strong> simula el proceso del gradiente descendente para la función 
+      <em>f(x) = x²</em>, cuya derivada es <em>f'(x) = 2x</em>. Se observa cómo los valores de <em>x</em> 
+      van disminuyendo gradualmente hasta aproximarse al punto mínimo en <em>x = 0</em>.
+    </p>
+
+    <pre><code>
+    # Simulación y gráfico del gradiente en R
+    n <- 0.01
+    f <- function(x) x^2
+    f_deriv <- function(x) 2 * x
+
+    x0 <- 3
+    iter <- 21
+    x <- numeric(iter)
+    fx <- numeric(iter)
+    fpx <- numeric(iter)
+    grad <- numeric(iter)
+
+    x[1] <- x0
+    for (i in 1:iter) {
+    fx[i] <- f(x[i])
+    fpx[i] <- f_deriv(x[i])
+    grad[i] <- x[i] - n * fpx[i]
+    if (i < iter) x[i + 1] <- grad[i]
+    }
+
+    tabla <- data.frame(xo = x, fx = fx, fpx = fpx, grad = grad)
+    print(tabla)
+    </code></pre>
+
+  </div>
+
+  <!-- Gradiente de dos variables -->
+  <div class="section">
+    <h2>Gradiente de una función con dos variables</h2>
+    <p style="text-align: justify;">
+      El <strong>gradiente</strong> de una función de dos variables <em>f(x, y)</em> es un vector que apunta en la dirección 
+      del máximo crecimiento de la función. Está formado por las derivadas parciales respecto a cada variable:
+    </p>
+
+    <pre><code>
+    ∇f(x, y) = ( ∂f/∂x , ∂f/∂y )
+    </code></pre>
+
+    <p style="text-align: justify;">
+      En el método del <strong>descenso del gradiente</strong>, se busca el punto mínimo de la función actualizando 
+      los valores de <em>x</em> y <em>y</em> en la dirección opuesta al gradiente:
+    </p>
+
+    <pre><code>
+    x[i+1] = x[i] - η * (∂f/∂x)(x[i], y[i])
+    y[i+1] = y[i] - η * (∂f/∂y)(x[i], y[i])
+    </code></pre>
+
+    <p style="text-align: justify;">
+      donde <em>η</em> es la tasa de aprendizaje que controla el tamaño del paso.
+    </p>
+
+    <h3>Implementación en R</h3>
+    <p style="text-align: justify;">
+      En este ejemplo se aplica el método del gradiente descendente a la función:
+    </p>
+    <pre><code>
+    f(x, y) = 3x²y³ + 6xy²
+    </code></pre>
+    <p>cuyas derivadas parciales son:</p>
+    <pre><code>
+    ∂f/∂x = 6xy³ + 6y²
+    ∂f/∂y = 9x²y² + 12xy
+    </code></pre>
+
+    <p style="text-align: justify;">
+      El siguiente código en <strong>R</strong> realiza la simulación y grafica la trayectoria de los puntos 
+      sobre un mapa de calor de <em>f(x, y)</em>.
+    </p>
+
+    <pre><code>
+    # Método del gradiente descendente para f(x,y) = 3x^2y^3 + 6xy^2
+    f <- function(x, y) 3*x^2*y^3 + 6*x*y^2
+    fx <- function(x, y) 6*x*y^3 + 6*y^2
+    fy <- function(x, y) 9*x^2*y^2 + 12*x*y
+
+    n <- 0.01
+    iter <- 20
+    x <- numeric(iter); y <- numeric(iter); z <- numeric(iter)
+    x[1] <- 2; y[1] <- 1
+
+    for (i in 1:iter) {
+    z[i] <- f(x[i], y[i])
+    dfx <- fx(x[i], y[i])
+    dfy <- fy(x[i], y[i])
+    if (i < iter) {
+        x[i + 1] <- x[i] - n * dfx
+        y[i + 1] <- y[i] - n * dfy
+        }
+    }
+
+    tabla <- data.frame(iter = 1:iter, x = x, y = y, fxy = z)
+    print(tabla)
+    </code></pre>
+
+  </div>
+
+  <!-- Enlaces -->
+  <div class="section">
+    <div class="links">
+      <a href="PN_U2_Trabajo_7_Gradiente.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="Gradientes.zip" target="_blank">📘 Descargar Códigos</a>
+      <a href="../../../unidad2.html">⬅️ Volver a Actividades de la Unidad 2</a>
+    </div>
+  </div>
+
+</body>
+</html>
