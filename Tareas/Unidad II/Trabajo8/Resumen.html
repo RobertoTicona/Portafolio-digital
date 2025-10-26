@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Comparación de Métodos de Regresión Lineal – Programación Numérica</title>
+  <link rel="stylesheet" href="../../../css/tareas.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <header>
+    <h1>Unidad II – Análisis del Artículo</h1>
+    <p>Actividad del curso de Programación Numérica</p>
+  </header>
+
+  <!-- Descripción -->
+  <div class="section">
+    <h2>Descripción</h2>
+    <p style="text-align: justify;">
+      El artículo compara dos métodos fundamentales para resolver problemas de regresión lineal: el 
+      <strong>pseudoinverso de Moore–Penrose</strong> y el <strong>descenso de gradiente</strong>.
+      La regresión lineal busca encontrar los parámetros que mejor predicen una variable dependiente
+      a partir de variables independientes, minimizando los errores cuadrados (OLS).
+    </p>
+
+    <p style="text-align: justify;">
+      El pseudoinverso de Moore–Penrose ofrece una <strong>solución analítica exacta</strong> mediante
+      operaciones matriciales, proporcionando el mínimo error posible. Sin embargo, puede ser
+      computacionalmente costoso e inestable cuando la matriz de características es muy grande o está
+      mal condicionada. En cambio, el <strong>descenso de gradiente</strong> es un método 
+      <strong>iterativo</strong> que ajusta los parámetros gradualmente en función de la dirección del
+      gradiente negativo del error, controlado por una tasa de aprendizaje. Aunque no garantiza una
+      solución exacta, es escalable y adaptable a grandes volúmenes de datos.
+    </p>
+
+    <p style="text-align: justify;">
+      En el <strong>marco teórico</strong>, se explica que la estabilidad numérica y la eficiencia de cada
+      método dependen del tamaño del conjunto de datos (<em>n</em>), el número de variables (<em>d</em>) y la
+      condición de la matriz <em>X</em>. El pseudoinverso utiliza descomposición SVD, mientras que el descenso
+      de gradiente requiere pasos controlados y puede verse afectado por la escala de las variables.
+    </p>
+
+    <p style="text-align: justify;">
+      En la <strong>metodología</strong>, el autor realizó experimentos con datos sintéticos y reales.
+      Los datos sintéticos permitieron manipular parámetros como el número de muestras, la dimensionalidad
+      y el factor de condición. Para los datos reales se usaron los conjuntos <em>California Housing</em>
+      (20,640 muestras y 8 variables) y <em>Diabetes</em> (442 muestras y 10 variables). En ambos casos se
+      evaluaron tres métricas: <strong>tiempo de ejecución</strong>, <strong>error cuadrático medio (MSE)</strong>
+      y, para el descenso de gradiente, el <strong>número de iteraciones hasta la convergencia</strong>. 
+      Los experimentos se implementaron en Python, usando la función <code>pinv()</code> para el pseudoinverso 
+      y un algoritmo de gradiente con tasa de aprendizaje <em>α = 0.01</em> y tolerancia <em>10⁻⁶</em>.
+    </p>
+
+    <p style="text-align: justify;">
+      Los <strong>resultados</strong> mostraron que el pseudoinverso fue más rápido y preciso en conjuntos
+      pequeños o moderados, manteniendo una alta estabilidad numérica. En cambio, el descenso de gradiente
+      necesitó más iteraciones y su rendimiento dependió fuertemente del escalado de las variables y del
+      valor de la tasa de aprendizaje. Sin embargo, en escenarios de alta dimensionalidad o grandes volúmenes
+      de datos, el descenso de gradiente (y sus variantes como el estocástico) resultó más escalable y eficiente.
+    </p>
+
+    <p style="text-align: justify;">
+      En <strong>conclusión</strong>, el pseudoinverso de Moore–Penrose es ideal para conjuntos de datos bien
+      condicionados y de tamaño moderado, ofreciendo soluciones exactas con bajo error. El descenso de gradiente
+      es preferible para problemas de gran escala, aunque requiere ajuste de hiperparámetros y un buen
+      preprocesamiento. Ambos métodos son esenciales en el análisis de regresión, y su elección depende del
+      equilibrio entre exactitud, estabilidad y costo computacional.
+    </p>
+  </div>
+
+  <!-- Comparación -->
+  <div class="section">
+    <h2>Comparación de rendimiento entre métodos de optimización</h2>
+    <p style="text-align: justify;">
+      El objetivo de esta prueba fue evaluar la eficiencia computacional del método de regresión lineal de 
+      <code>R</code> (<code>lm</code>) en comparación con el algoritmo de <strong>gradiente descendente</strong>.
+      Se emplearon conjuntos de datos de diferentes tamaños (100 a 10,000 observaciones) y se registraron el 
+      <strong>tiempo de ejecución</strong> (en segundos) y el <strong>uso de memoria</strong> (en bytes) mediante 
+      la librería <code>bench</code>. Ambos métodos fueron implementados bajo las mismas condiciones para 
+      garantizar una comparación justa.
+    </p>
+
+    <table border="1" style="border-collapse: collapse; margin: auto; text-align: center; width: 90%;">
+      <thead>
+        <tr>
+          <th>Tamaño</th>
+          <th>Método</th>
+          <th>Tiempo (s)</th>
+          <th>Memoria (bytes)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>100</td><td>lm</td><td>5.431</td><td>104,573,176</td></tr>
+        <tr><td>100</td><td>Gradiente</td><td>0.005</td><td>143,432</td></tr>
+        <tr><td>1000</td><td>lm</td><td>2.769</td><td>967,960,000</td></tr>
+        <tr><td>1000</td><td>Gradiente</td><td>0.030</td><td>800,048</td></tr>
+        <tr><td>5000</td><td>lm</td><td>16.215</td><td>4,934,680,000</td></tr>
+        <tr><td>5000</td><td>Gradiente</td><td>0.566</td><td>4,000,048</td></tr>
+        <tr><td>10000</td><td>lm</td><td>10.175</td><td>9,862,360,000</td></tr>
+        <tr><td>10000</td><td>Gradiente</td><td>0.352</td><td>8,000,048</td></tr>
+      </tbody>
+    </table>
+
+    <p style="text-align: justify; margin-top: 15px;">
+      Los resultados evidencian una ventaja clara del gradiente descendente frente a la función 
+      <code>lm()</code>. Mientras que <code>lm()</code> presenta un aumento drástico del tiempo y la memoria 
+      conforme crece el tamaño de los datos, el gradiente mantiene un incremento casi lineal y mucho menor. 
+      Esto se debe a que <code>lm()</code> realiza operaciones matriciales completas para estimar los coeficientes, 
+      lo que resulta costoso en términos computacionales, mientras que el gradiente ajusta los parámetros de forma 
+      iterativa y progresiva.
+    </p>
+
+    <p style="text-align: justify;">
+      En consecuencia, para grandes volúmenes de datos o tareas repetitivas, el método del gradiente descendente 
+      ofrece un rendimiento considerablemente superior, tanto en velocidad como en eficiencia del uso de recursos.
+    </p>
+
+    <div class="imagenes" style="text-align: center; margin-top: 20px;">
+      <img src="tiempo.png" alt="Gráfico de tiempo de ejecución" style="width:45%; margin-right:2%;">
+      <img src="memoria.png" alt="Gráfico de uso de memoria" style="width:45%;">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="links">
+      <a href="PN_U2_Trabajo_8_Análisis_del_artículo.pdf" target="_blank">📄 Ver PDF</a>
+      <a href="../../../unidad2.html">⬅️ Volver a Actividades de la Unidad 2</a>
+    </div>
+  </div>
+
+</body>
+</html>
+
